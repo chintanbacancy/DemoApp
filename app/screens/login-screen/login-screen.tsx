@@ -1,9 +1,7 @@
 import React, { useState } from "react"
 import { observer } from "mobx-react-lite"
-import { ScrollView, KeyboardAvoidingView, View, TextInput, TouchableOpacity, ViewStyle, Alert } from 'react-native'
+import { View, TextInput, TouchableOpacity, ViewStyle, StyleSheet } from 'react-native'
 import { Screen, Text } from "../../components"
-// import { useNavigation } from "@react-navigation/native"
-// import { useStores } from "../../models"
 import { color } from "../../theme"
 import { useNavigation } from "@react-navigation/native"
 
@@ -24,14 +22,14 @@ export const LoginScreen = observer(function LoginScreen() {
     let isValid = true
     if (!email) {
       isValid = false
-      setEmailError("Please Enter Valid Email")
+      setEmailError("Please enter valid Email")
     } else if (!validateEmail(email)) {
       isValid = false
-      setEmailError("Please Enter Valid Email")
+      setEmailError("Please enter valid Email")
     }
     if (!password) {
       isValid = false
-      setPasswordError("Please Enter Valid Password")
+      setPasswordError("Please enter valid Password")
     }
     if (isValid) {
       navigation.push('productList')
@@ -44,36 +42,22 @@ export const LoginScreen = observer(function LoginScreen() {
     return re.test(String(email).toLowerCase());
   }
 
-  // const { someStore, anotherStore } = useStores()
-  // OR
-  // const rootStore = useStores()
-
   // Pull in navigation via hook
   return (
     <Screen style={ROOT} preset="scroll">
-      <View style={{ flex: 1, backgroundColor: 'white' }}>
-        <View style={{
-          marginTop: 90,
-          marginHorizontal: 20,
-        }}>
-          <Text style={{ fontSize: 25, color: '#ccc' }}>Welcome back </Text>
+      <View style={styles.containerStyle}>
+        <View style={styles.formOuterVireStyle}>
+          <Text style={styles.welComeBackText}>Welcome back </Text>
           <View style={{ marginTop: 10 }}>
-            <Text style={{ fontSize: 13, color: '#ccc' }}>Sign in to continue</Text>
+            <Text style={styles.signInText}>Sign in to continue</Text>
           </View>
           <View style={{ marginTop: 45 }}>
-            <Text style={{ fontSize: 18, color: '#585858' }}>Username</Text>
+            <Text style={styles.labelTextStyle}>Email</Text>
             <TextInput
-              style={{ borderBottomWidth: 1, borderBottomColor: '#ccc', height: 40, paddingHorizontal: -15 }}
+              style={styles.textInputStyle}
               value={email}
               returnKeyType={'next'}
-              // ref={ref => (this.email = ref)}
               placeholderTextColor={'#ccc'}
-              // onSubmitEditing={() => {
-              //     this.password.focus();
-              //   }}
-              //   onFocus={() => {
-              //     this.email;
-              //   }}
               placeholder={'Enter your Email'}
               onChangeText={(text) => {
                 setEmailError("")
@@ -83,21 +67,14 @@ export const LoginScreen = observer(function LoginScreen() {
             {emailError ? <Text style={{ fontSize: 13, color: 'red' }}>{emailError}</Text> : null}
           </View>
           <View style={{ marginTop: 20 }}>
-            <Text style={{ fontSize: 18, color: '#585858' }}>Password</Text>
+            <Text style={styles.labelTextStyle}>Password</Text>
             <TextInput
-              style={{ borderBottomWidth: 1, borderBottomColor: '#ccc', height: 40, paddingHorizontal: -15 }}
+              style={ styles.textInputStyle}
               placeholder={'Enter your Password'}
               returnKeyType={'next'}
-              // ref={ref => (this.password = ref)}
               secureTextEntry={true}
               placeholderTextColor={'#ccc'}
               value={password}
-              // onFocus={() => {
-              //     this.password;
-              //   }}
-              //   onSubmitEditing={()=>{
-              //     Keyboard.dismiss()
-              //   }}
               onChangeText={(text) => {
                 setPasswordError("")
                 setPassword(text)
@@ -110,11 +87,9 @@ export const LoginScreen = observer(function LoginScreen() {
           </View>
           <View style={{ marginTop: 100 }}>
             <TouchableOpacity
-              style={{
-                Width: 150, height: 50, alignItems: 'center', justifyContent: 'center', backgroundColor: '#DC1957', borderRadius: 5
-              }}
+              style={styles.lofinButtonOuterView}
               onPress={() => onLogin()}>
-              <Text style={{ color: 'white', textAlign: 'center', fontSize: 16 }}>Log In</Text>
+              <Text style={styles.logintextStyle}>Sign In</Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -122,3 +97,31 @@ export const LoginScreen = observer(function LoginScreen() {
     </Screen>
   )
 })
+const styles = StyleSheet.create({
+  containerStyle: {
+    flex: 1, backgroundColor: 'white'
+  },
+  formOuterVireStyle: {
+    marginTop: 90,
+    marginHorizontal: 20,
+  },
+  welComeBackText: {
+    fontSize: 25, color: '#ccc'
+  },
+  signInText: {
+    fontSize: 13, color: '#ccc'
+  },
+  lofinButtonOuterView: {
+    Width: 150, height: 50, alignItems: 'center', justifyContent: 'center', backgroundColor: '#DC1957', borderRadius: 5
+  },
+  logintextStyle: {
+    color: 'white', textAlign: 'center', fontSize: 16
+  },
+  labelTextStyle:{
+    fontSize: 18, color: '#585858'
+  },
+  textInputStyle:{
+    borderBottomWidth: 1, borderBottomColor: '#ccc', height: 40, paddingHorizontal: -15
+  }
+
+});

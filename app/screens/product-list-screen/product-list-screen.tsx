@@ -1,18 +1,14 @@
 import React, { useEffect, useState } from "react"
 import { observer } from "mobx-react-lite"
-import { Alert, ViewStyle } from "react-native"
+import {  ViewStyle } from "react-native"
 import _ from 'lodash'
 import { Icon, Screen, Text } from "../../components"
-import Swipeable from 'react-native-swipeable';
 import { SwipeListView } from 'react-native-swipe-list-view';
-// import { useNavigation } from "@react-navigation/native"
-import { SafeAreaView, View, FlatList, StyleSheet, StatusBar, Image, TextInput, TouchableOpacity } from 'react-native';
-
-// import { useStores } from "../../models"
+import {  View, StyleSheet, StatusBar, TextInput, TouchableOpacity,Image } from 'react-native';
 import { color } from "../../theme"
-import { DATA } from "../../utils/demoData";
+import { DATA, productImage } from "../../utils/demoData";
 import { load, save } from "../../utils/storage"
-import { async } from "validate.js"
+
 
 const ROOT: ViewStyle = {
   backgroundColor: color.palette.white,
@@ -74,35 +70,42 @@ export const ProductListScreen = observer(function ProductListScreen() {
 
   const Item = ({ title, item }) => (
     <View style={styles.item}>
-      <Icon style={{
-        height: 200, width: 200, marginBottom: 10
-      }} icon={'product'} />
+      <Image
+        style={styles.listImageStyle}
+        source={{
+          uri: productImage,
+        }}/>
+      {/* <Icon style={styles.listImageStyle} icon={'product'} /> */}
       <Text style={styles.title}>{title}</Text>
-      <Text style={styles.title}>{item.price}</Text>
+      <Text style={styles.title}> Price:- {item.price}</Text>
       <TouchableOpacity
-        style={{
-          height: 50, alignItems: 'center', justifyContent: 'center', backgroundColor: '#DC1957', borderRadius: 5, marginTop: 5, width: 200
-        }}
+        style={styles.listItemButton}
         onPress={() => toggelFromCart(item)}>
-        <Text style={{ color: 'white', textAlign: 'center', fontSize: 12, }}> {_.find(cartData, item) ? "Item added in cart" : "Add To Cart"}</Text>
+        <Text style={styles.listItemButtonText}> {_.find(cartData, item) ? "Added In cart" : "Add To Cart"}</Text>
       </TouchableOpacity>
-
     </View>
   );
 
   const renderItem = ({ item }) => (
     <Item title={item.title} item={item} />
   );
+
+  const emptyComponent = ({ item }) => (
+    <View style={{alignItems:"center",marginTop:20}} >
+      <Text style={{color:"black",fontSize:14,marginStart:15}} >No Products Found</Text>
+    </View>
+  );
+
   // Pull in navigation via hook
   // const navigation = useNavigation()
   return (
     <Screen style={ROOT} preset="fixed">
-      <View style={{ paddingStart: 20, backgroundColor: "#DC1957", height: 50, alignItems: "center", justifyContent: "center" }}>
-        <Text style={{ fontSize: 20, color: "white" }}  >Product List</Text>
+      <View style={styles.headerOuterView }>
+        <Text style={ styles.headertext}>Product List</Text>
       </View>
-      <View style={{ paddingStart: 20, height: 50, alignItems: "center", justifyContent: "center" }}>
+      <View style={styles.searchBarOuterView }>
         <TextInput
-          style={{ borderBottomWidth: 1, borderBottomColor: '#ccc', height: 40, width: "100%", paddingEnd: 20, marginRight: 20 }}
+          style={styles.searchBarText}
           placeholder={'Search Product'}
           placeholderTextColor={'#ccc'}
           value={search}
@@ -116,21 +119,16 @@ export const ProductListScreen = observer(function ProductListScreen() {
       <SwipeListView
         data={listData}
         renderItem={renderItem}
+        ListEmptyComponent={emptyComponent}
         extraData={listData}
         keyExtractor={item => item.id.toString()}
         renderHiddenItem={(data, rowMap) => (
-          <View style={{
-            alignItems: 'center',
-            flex: 1,
-            flexDirection: 'row',
-            justifyContent: 'space-between',
-            paddingLeft: 15,
-          }}>
+          <View style={styles.hiddenButtonOuterStyle}>
             <TouchableOpacity onPress={() => toggelFromCart(data.item)} >
-              <Icon style={{ height: 50, width: 50, marginLeft: 25 }} icon={"addTocart"} />
+              <Icon style={ styles.addCartStyle} icon={"addTocart"} />
             </TouchableOpacity>
             <TouchableOpacity onPress={() => toggelFromCart(data.item)} >
-              <Icon style={{ height: 50, width: 50, resizeMode: 'contain', marginRight: 25 }} icon={"removeCart"} />
+              <Icon style={ styles.removeCartStyle} icon={"removeCart"} />
             </TouchableOpacity>
 
           </View>
@@ -147,7 +145,7 @@ const styles = StyleSheet.create({
     marginTop: StatusBar.currentHeight || 0,
   },
   item: {
-    borderColor: '#f9c2ff',
+    borderColor: '#DC1957',
     borderWidth: 1,
     borderRadius: 8,
     backgroundColor: "white",
@@ -160,7 +158,41 @@ const styles = StyleSheet.create({
     marginHorizontal: 16,
   },
   title: {
-    fontSize: 10,
+    fontSize: 16,
     color: color.palette.black
   },
+  removeCartStyle:{
+    height: 50, width: 50, resizeMode: 'contain', marginRight: 25
+  },
+  addCartStyle:{
+    height: 50, width: 50, marginLeft: 25
+  },
+  hiddenButtonOuterStyle:{
+    alignItems: 'center',
+    flex: 1,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    paddingLeft: 15,
+  },
+  listImageStyle:{
+    height: 200, width: 200, marginBottom: 10
+  },
+  listItemButton:{
+    height: 50, alignItems: 'center', justifyContent: 'center', backgroundColor: '#DC1957', borderRadius: 5, marginTop: 5, width: 200
+  },
+  listItemButtonText:{
+    color: 'white', textAlign: 'center', fontSize: 16,
+  },
+  headerOuterView:{
+     backgroundColor: "#DC1957", height: 50, alignItems: "center", justifyContent: "center"
+  },
+  headertext:{
+    fontSize: 20, color: "white" 
+  },
+  searchBarOuterView:{
+    paddingStart: 20, height: 50, alignItems: "center", justifyContent: "center"
+  },
+  searchBarText:{
+    borderBottomWidth: 1, borderBottomColor: '#ccc', height: 40, width: "100%", paddingEnd: 20, marginRight: 20
+  }
 });
