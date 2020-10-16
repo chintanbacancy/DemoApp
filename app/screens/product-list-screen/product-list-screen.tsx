@@ -11,7 +11,8 @@ import { SafeAreaView, View, FlatList, StyleSheet, StatusBar, Image, TextInput, 
 // import { useStores } from "../../models"
 import { color } from "../../theme"
 import { DATA } from "../../utils/demoData";
-import { save } from "../../utils/storage"
+import { load, save } from "../../utils/storage"
+import { async } from "validate.js"
 
 const ROOT: ViewStyle = {
   backgroundColor: color.palette.white,
@@ -35,7 +36,14 @@ export const ProductListScreen = observer(function ProductListScreen() {
   useEffect(() => {
     setListData(DATA)
     setListCloneData(DATA)
+    async function fetchCartData() {
+      let cart = await load('cart');
+      setCartData(cart)
+
+    }
+    fetchCartData()
   }, []);
+
 
 
   const onSearchFilter = (value) => {
@@ -50,9 +58,9 @@ export const ProductListScreen = observer(function ProductListScreen() {
   }
 
   const toggelFromCart = (item) => {
-    let updatedCartData: any = cartData;
+    let updatedCartData: any = cartData?cartData:[];
     if (_.find(updatedCartData, item)) {
-       _.remove(updatedCartData, function (n) {
+      _.remove(updatedCartData, function (n) {
         return n.id == item.id;
       })
     } else {
@@ -85,7 +93,6 @@ export const ProductListScreen = observer(function ProductListScreen() {
   const renderItem = ({ item }) => (
     <Item title={item.title} item={item} />
   );
-console.tron.log("listData",listData)
   // Pull in navigation via hook
   // const navigation = useNavigation()
   return (

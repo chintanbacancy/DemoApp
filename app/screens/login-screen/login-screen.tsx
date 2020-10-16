@@ -14,10 +14,10 @@ const ROOT: ViewStyle = {
 
 export const LoginScreen = observer(function LoginScreen() {
   // Pull in one of our MST stores
-  const [email, setEmail] = useState("test@mail.com");
+  const [email, setEmail] = useState("");
   const [emailError, setEmailError] = useState("");
   const [passwordError, setPasswordError] = useState("");
-  const [password, setPassword] = useState("123");
+  const [password, setPassword] = useState("");
   const navigation: any = useNavigation();
 
   const onLogin = () => {
